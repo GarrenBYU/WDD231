@@ -1,21 +1,22 @@
-import { getParkData } from "./parkService.mjs";
-
+import { getParkData, parkInfoLinks } from "./parkService.mjs";
+import setHeaderFooter from "./setHeaderFooter.mjs";
+import { mediaCardTemplate } from "./templates.mjs";
 const parkData = getParkData();
 
-function parkInfoTemplate(info) {
-  return `<a href="/" class="main-banner__title">${info.name}</a>
-  <p class="main-banner__subtitle">
-    <span>${info.designation}</span>
-    <span>${info.states}</span>
-  </p>`;
+function setParkIntro(data) {
+  const introEl = document.querySelector(".intro");
+  introEl.innerHTML = `<h1>${parkData.fullName}</h1>
+  <p>${parkData.description}</p>`;
 }
 
-const disclaimer = document.querySelector(".disclaimer > a");
-disclaimer.href = parkData.url;
-disclaimer.innerHTML = parkData.fullName;
+function setParkInfoLinks(data) {
+  const infoEl = document.querySelector(".info");
+  // we have multiple links to build...so we map to transform the array of objects into an array of HTML strings.
+  const html = data.map(mediaCardTemplate);
+  // join the array of strings into one string and insert it into the section
+  infoEl.insertAdjacentHTML("afterbegin", html.join(""));
+}
 
-document.querySelector("head > title").textContent = parkData.fullName;
-
-document.querySelector(".main-banner > img").src = parkData.images[0].url;
-
-document.querySelector(".main-banner__content").innerHTML = parkInfoTemplate(parkData);
+setHeaderFooter(parkData);
+setParkIntro(parkData);
+setParkInfoLinks(parkInfoLinks);
